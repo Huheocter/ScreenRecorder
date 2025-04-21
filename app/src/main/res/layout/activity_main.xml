@@ -131,6 +131,14 @@
         </LinearLayout>
     </ScrollView>
 
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/with_audio"
+        android:layout_alignParentEnd="true"
+        android:text="@string/set_default" />
+
     <ToggleButton
         android:id="@+id/with_audio"
         android:layout_width="wrap_content"

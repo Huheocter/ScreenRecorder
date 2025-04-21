@@ -20,6 +20,7 @@
     <string name="start_recorder">Iniciar gravador</string>
     <string name="stop_recorder">Parar gravador</string>
     <string name="restart_recorder">Reiniciar gravador</string>
+    <string name="set_default">Definir padrão</string>
 
 
     <string name="no_permission">Sem Permissão</string>

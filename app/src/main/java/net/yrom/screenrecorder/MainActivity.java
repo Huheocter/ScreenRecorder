@@ -72,8 +72,9 @@ public class MainActivity extends Activity {
     // members below will be initialized in onCreate()
     private MediaProjectionManager mMediaProjectionManager;
     private Button mButton;
+    private Button mSaveButton;
     private ToggleButton mAudioToggle;
-    private NamedSpinner mVieoResolution;
+    private NamedSpinner mVideoResolution;
     private NamedSpinner mVideoFramerate;
     private NamedSpinner mIFrameInterval;
     private NamedSpinner mVideoBitrate;
@@ -111,7 +112,7 @@ public class MainActivity extends Activity {
             mAvcCodecInfos = infos;
             SpinnerAdapter codecsAdapter = createCodecsAdapter(mAvcCodecInfos);
             mVideoCodec.setAdapter(codecsAdapter);
-            restoreSelections(mVideoCodec, mVieoResolution, mVideoFramerate, mIFrameInterval, mVideoBitrate);
+            restoreSelections(mVideoCodec, mVideoResolution, mVideoFramerate, mIFrameInterval, mVideoBitrate);
 
         });
         Utils.findEncodersByTypeAsync(AUDIO_AAC, infos -> {
@@ -270,10 +271,10 @@ public class MainActivity extends Activity {
             return null;
         }
         // video size
-        int[] selectedWithHeight = getSelectedWithHeight();
+        int[] selectedWidthHeight = getSelectedWidthHeight();
         boolean isLandscape = isLandscape();
-        int width = selectedWithHeight[isLandscape ? 0 : 1];
-        int height = selectedWithHeight[isLandscape ? 1 : 0];
+        int width = selectedWidthHeight[isLandscape ? 0 : 1];
+        int height = selectedWidthHeight[isLandscape ? 1 : 0];
         int framerate = getSelectedFramerate();
         int iframe = getSelectedIFrameInterval();
         int bitrate = getSelectedVideoBitrate();
@@ -327,9 +328,10 @@ public class MainActivity extends Activity {
     private void bindViews() {
         mButton = findViewById(R.id.record_button);
         mButton.setOnClickListener(this::onButtonClick);
-
+        mSaveButton = findViewById(R.id.save_button);
+        mSaveButton.setOnClickListener(this::onSaveButtonClick);
         mVideoCodec = findViewById(R.id.video_codec);
-        mVieoResolution = findViewById(R.id.resolution);
+        mVideoResolution = findViewById(R.id.resolution);
         mVideoFramerate = findViewById(R.id.framerate);
         mIFrameInterval = findViewById(R.id.iframe_interval);
         mVideoBitrate = findViewById(R.id.video_bitrate);
@@ -354,7 +356,7 @@ public class MainActivity extends Activity {
 
         mVideoCodec.setOnItemSelectedListener((view, position) -> onVideoCodecSelected(view.getSelectedItem()));
         mAudioCodec.setOnItemSelectedListener((view, position) -> onAudioCodecSelected(view.getSelectedItem()));
-        mVieoResolution.setOnItemSelectedListener((view, position) -> {
+        mVideoResolution.setOnItemSelectedListener((view, position) -> {
             onResolutionChanged(position, view.getSelectedItem());
         });
         mVideoFramerate.setOnItemSelectedListener((view, position) -> {
@@ -382,6 +384,10 @@ public class MainActivity extends Activity {
         } else {
             toast(getString(R.string.no_permission_to_write_sd_ard));
         }
+    }
+
+    private void onSaveButtonClick(View v) {
+    	saveSelections();
     }
 
     private void startRecorder() {
@@ -458,14 +464,14 @@ public class MainActivity extends Activity {
         double selectedFramerate = getSelectedFramerate();
         int resetPos = Math.max(selectedPosition - 1, 0);
         if (!videoCapabilities.isSizeSupported(width, height)) {
-            mVieoResolution.setSelectedPosition(resetPos);
+            mVideoResolution.setSelectedPosition(resetPos);
             toast(getString(R.string.codec_unsupported_size),
                     codecName, width, height, mOrientation.getSelectedItem());
             Log.w("@@", codecName +
                     " height range: " + videoCapabilities.getSupportedHeights() +
                     "\n width range: " + videoCapabilities.getSupportedHeights());
         } else if (!videoCapabilities.areSizeAndRateSupported(width, height, selectedFramerate)) {
-            mVieoResolution.setSelectedPosition(resetPos);
+            mVideoResolution.setSelectedPosition(resetPos);
             toast(getString(R.string.codec_unsupported_size_with_framerate),
                     codecName, width, height, mOrientation.getSelectedItem(), (int) selectedFramerate);
         }
@@ -494,13 +500,13 @@ public class MainActivity extends Activity {
         if (codec == null) return;
         MediaCodecInfo.CodecCapabilities capabilities = codec.getCapabilitiesForType(VIDEO_AVC);
         MediaCodecInfo.VideoCapabilities videoCapabilities = capabilities.getVideoCapabilities();
-        int[] selectedWithHeight = getSelectedWithHeight();
+        int[] selectedWidthHeight = getSelectedWidthHeight();
         boolean isLandscape = selectedPosition == 1;
-        int width = selectedWithHeight[isLandscape ? 0 : 1];
-        int height = selectedWithHeight[isLandscape ? 1 : 0];
-        int resetPos = Math.max(mVieoResolution.getSelectedItemPosition() - 1, 0);
+        int width = selectedWidthHeight[isLandscape ? 0 : 1];
+        int height = selectedWidthHeight[isLandscape ? 1 : 0];
+        int resetPos = Math.max(mVideoResolution.getSelectedItemPosition() - 1, 0);
         if (!videoCapabilities.isSizeSupported(width, height)) {
-            mVieoResolution.setSelectedPosition(resetPos);
+            mVideoResolution.setSelectedPosition(resetPos);
             toast(getString(R.string.codec_unsupported_size),
                     codecName, width, height, orientation);
             return;
@@ -520,11 +526,11 @@ public class MainActivity extends Activity {
         if (codec == null) return;
         MediaCodecInfo.CodecCapabilities capabilities = codec.getCapabilitiesForType(VIDEO_AVC);
         MediaCodecInfo.VideoCapabilities videoCapabilities = capabilities.getVideoCapabilities();
-        int[] selectedWithHeight = getSelectedWithHeight();
+        int[] selectedWidthHeight = getSelectedWidthHeight();
         int selectedFramerate = Integer.parseInt(rate);
         boolean isLandscape = isLandscape();
-        int width = selectedWithHeight[isLandscape ? 0 : 1];
-        int height = selectedWithHeight[isLandscape ? 1 : 0];
+        int width = selectedWidthHeight[isLandscape ? 0 : 1];
+        int height = selectedWidthHeight[isLandscape ? 1 : 0];
 
         int resetPos = Math.max(selectedPosition - 1, 0);
         if (!videoCapabilities.getSupportedFrameRates().contains(selectedFramerate)) {
@@ -732,9 +738,9 @@ public class MainActivity extends Activity {
         return mVideoProfileLevel != null ? Utils.toProfileLevel(mVideoProfileLevel.getSelectedItem()) : null;
     }
 
-    private int[] getSelectedWithHeight() {
-        if (mVieoResolution == null) throw new IllegalStateException();
-        String selected = mVieoResolution.getSelectedItem();
+    private int[] getSelectedWidthHeight() {
+        if (mVideoResolution == null) throw new IllegalStateException();
+        String selected = mVideoResolution.getSelectedItem();
         String[] xes = selected.split("x");
         if (xes.length != 2) throw new IllegalArgumentException();
         return new int[]{Integer.parseInt(xes[0]), Integer.parseInt(xes[1])};
@@ -847,7 +853,7 @@ public class MainActivity extends Activity {
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor edit = preferences.edit();
         for (NamedSpinner spinner : new NamedSpinner[]{
-                mVieoResolution,
+                mVideoResolution,
                 mVideoFramerate,
                 mIFrameInterval,
                 mVideoBitrate,
