@@ -1,3 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.example'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
 import java.io.IOException
 plugins{
     id 'com.github.lanchon.dexpatcher.patched-application' version '2.0.0' apply false
