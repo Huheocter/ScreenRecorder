@@ -148,6 +148,13 @@
         android:checked="true"
         android:textOff="@string/without_audio"
         android:textOn="@string/with_audio" />
+    <ToggleButton
+        android:id="@+id/with_system_audio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="System Audio"
+        android:textOff="System Audio"
+        android:checked="false"/>
 
     <Button
         android:id="@+id/record_button"
