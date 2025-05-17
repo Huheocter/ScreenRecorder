@@ -334,6 +334,25 @@ class MicRecorder implements Encoder {
         mFramesUsCache.put(LAST_FRAME_ID, currentUs + frameUs);
         return currentUs;
     }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && selectedAudioSource == SYSTEM_AUDIO) {
+    AudioPlaybackCaptureConfiguration config =
+        new AudioPlaybackCaptureConfiguration.Builder(mediaProjection)
+            .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
+            .build();
+
+    AudioRecord record = new AudioRecord.Builder()
+        .setAudioPlaybackCaptureConfig(config)
+        .setAudioFormat(new AudioFormat.Builder()
+            .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+            .setSampleRate(44100)
+            .setChannelMask(AudioFormat.CHANNEL_IN_STEREO)
+            .build())
+        .setBufferSizeInBytes(bufferSize)
+        .build();
+    // Use 'record' for recording system audio
+       } else {
+    // Existing microphone recording logic
+    }
 
     private static AudioRecord createAudioRecord(int sampleRateInHz, int channelConfig, int audioFormat) {
         int minBytes = AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat);
