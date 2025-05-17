@@ -155,7 +155,11 @@
         android:textOn="System Audio"
         android:textOff="System Audio"
         android:checked="false"/>
-
+    <Switch
+    android:id="@+id/switch_system_sound"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Record System Sound"/>
     <Button
         android:id="@+id/record_button"
         android:layout_width="wrap_content"
