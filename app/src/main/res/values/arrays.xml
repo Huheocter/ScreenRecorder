@@ -48,4 +48,8 @@
     </string-array>
     <string name="portrait">Portrait</string>
     <string name="landscape">Landscape</string>
+    <string-array name="audio_sources">
+    <item>Microphone</item>
+    <item>System Audio</item>
+</string-array>
 </resources>
