@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'com.github.lanchon.dexpatcher.patched-application' version '2.0.0' apply false
+    id 'com.github.lanchon.dexpatcher.patch-library' version '2.0.0' apply false
 }
 
 group = 'com.example'
@@ -12,11 +14,8 @@ repositories {
 dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
+
 import java.io.IOException
-plugins{
-    id 'com.github.lanchon.dexpatcher.patched-application' version '2.0.0' apply false
-    id 'com.github.lanchon.dexpatcher.patch-library' version '2.0.0' apply false
-}
 
 String getGitHash(String project) {
     def command = Runtime.getRuntime().exec("git rev-list -1 HEAD " + project)
@@ -34,14 +33,12 @@ Boolean gitUsed() {
         case 127:
           println("git not found");
           return false;
-          break;
         case 128:
           println("not inside a git repository");
           return false;
-          break;
         case 0:
           return true;
         default:
           throw new IOException("Command 'gitUsed()' exited with " + returnCode)
-  }
+    }
 }
