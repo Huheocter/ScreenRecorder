@@ -16,11 +16,15 @@
 
 package net.yrom.screenrecorder;
 
+import android.content.Context;
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
+import android.media.AudioPlaybackCaptureConfiguration;
 import android.media.AudioRecord;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.media.MediaRecorder;
+import android.media.projection.MediaProjection;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -43,8 +47,8 @@ import static android.media.MediaCodec.INFO_OUTPUT_FORMAT_CHANGED;
 import static android.os.Build.VERSION_CODES.N;
 
 /**
- * @author yrom
- * @version 2017/12/4
+ * Supports MIC and internal audio (Android 10+) recording via AudioEncodeConfig.SourceType.
+ * Pass a non-null MediaProjection for internal audio, null for mic.
  */
 class MicRecorder implements Encoder {
     private static final String TAG = "MicRecorder";
@@ -63,7 +67,14 @@ class MicRecorder implements Encoder {
     private CallbackDelegate mCallbackDelegate;
     private int mChannelsSampleRate;
 
-    MicRecorder(AudioEncodeConfig config) {
+    private final AudioEncodeConfig config;
+    private final Context context;
+    private final MediaProjection mediaProjection; // nullable
+
+    MicRecorder(Context context, AudioEncodeConfig config, MediaProjection mediaProjection) {
+        this.context = context.getApplicationContext();
+        this.config = config;
+        this.mediaProjection = mediaProjection;
         mEncoder = new AudioEncoder(config);
         mSampleRate = config.sampleRate;
         mChannelsSampleRate = mSampleRate * config.channelCount;
@@ -112,11 +123,9 @@ class MicRecorder implements Encoder {
         Message.obtain(mRecordHandler, MSG_RELEASE_OUTPUT, index, 0).sendToTarget();
     }
 
-
     ByteBuffer getOutputBuffer(int index) {
         return mEncoder.getOutputBuffer(index);
     }
-
 
     private static class CallbackDelegate extends Handler {
         private BaseEncoder.Callback mCallback;
@@ -125,7 +134,6 @@ class MicRecorder implements Encoder {
             super(l);
             this.mCallback = callback;
         }
-
 
         void onError(Encoder encoder, Exception exception) {
             Message.obtain(this, () -> {
@@ -150,7 +158,6 @@ class MicRecorder implements Encoder {
                 }
             }).sendToTarget();
         }
-
     }
 
     private static final int MSG_PREPARE = 0;
@@ -161,7 +168,6 @@ class MicRecorder implements Encoder {
     private static final int MSG_RELEASE = 5;
 
     private class RecordHandler extends Handler {
-
         private LinkedList<MediaCodec.BufferInfo> mCachedInfos = new LinkedList<>();
         private LinkedList<Integer> mMuxingOutputBufferIndices = new LinkedList<>();
         private int mPollRate = 2048_000 / mSampleRate; // poll per 2048 samples
@@ -299,7 +305,6 @@ class MicRecorder implements Encoder {
         mEncoder.queueInputBuffer(index, offset, read, pstTs, flags);
     }
 
-
     private static final int LAST_FRAME_ID = -1;
     private SparseLongArray mFramesUsCache = new SparseLongArray(2);
 
@@ -335,31 +340,56 @@ class MicRecorder implements Encoder {
         return currentUs;
     }
 
-    private static AudioRecord createAudioRecord(int sampleRateInHz, int channelConfig, int audioFormat) {
-        int minBytes = AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat);
-        if (minBytes <= 0) {
-            Log.e(TAG, String.format(Locale.US, "Bad arguments: getMinBufferSize(%d, %d, %d)",
-                    sampleRateInHz, channelConfig, audioFormat));
-            return null;
-        }
-        AudioRecord record = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                sampleRateInHz,
-                channelConfig,
-                audioFormat,
-                minBytes * 2);
-
-        if (record.getState() == AudioRecord.STATE_UNINITIALIZED) {
-            Log.e(TAG, String.format(Locale.US, "Bad arguments to new AudioRecord %d, %d, %d",
-                    sampleRateInHz, channelConfig, audioFormat));
-            return null;
-        }
-        if (VERBOSE) {
-            Log.i(TAG, "created AudioRecord " + record + ", MinBufferSize= " + minBytes);
-            if (Build.VERSION.SDK_INT >= N) {
-                Log.d(TAG, " size in frame " + record.getBufferSizeInFrames());
+    /**
+     * Creates an AudioRecord for either mic or internal audio, depending on config.sourceType.
+     * For internal audio, requires Android 10+ and a valid MediaProjection.
+     */
+    private AudioRecord createAudioRecord(int sampleRateInHz, int channelConfig, int audioFormat) {
+        if (config.sourceType != null && config.sourceType.name().equalsIgnoreCase("INTERNAL")) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && mediaProjection != null) {
+                AudioPlaybackCaptureConfiguration apcConfig =
+                        new AudioPlaybackCaptureConfiguration.Builder(mediaProjection)
+                                .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
+                                .addMatchingUsage(AudioAttributes.USAGE_GAME)
+                                .addMatchingUsage(AudioAttributes.USAGE_UNKNOWN)
+                                .build();
+                return new AudioRecord.Builder()
+                        .setAudioPlaybackCaptureConfig(apcConfig)
+                        .setAudioFormat(new AudioFormat.Builder()
+                                .setEncoding(audioFormat)
+                                .setSampleRate(sampleRateInHz)
+                                .setChannelMask(channelConfig)
+                                .build())
+                        .build();
+            } else {
+                Log.e(TAG, "Internal audio capture requires Android 10+ and a valid MediaProjection.");
+                return null;
             }
-        }
-        return record;
-    }
+        } else {
+            int minBytes = AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat);
+            if (minBytes <= 0) {
+                Log.e(TAG, String.format(Locale.US, "Bad arguments: getMinBufferSize(%d, %d, %d)",
+                        sampleRateInHz, channelConfig, audioFormat));
+                return null;
+            }
+            AudioRecord record = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                    sampleRateInHz,
+                    channelConfig,
+                    audioFormat,
+                    minBytes * 2);
 
-}
+            if (record.getState() == AudioRecord.STATE_UNINITIALIZED) {
+                Log.e(TAG, String.format(Locale.US, "Bad arguments to new AudioRecord %d, %d, %d",
+                        sampleRateInHz, channelConfig, audioFormat));
+                return null;
+            }
+            if (VERBOSE) {
+                Log.i(TAG, "created AudioRecord " + record + ", MinBufferSize= " + minBytes);
+                if (Build.VERSION.SDK_INT >= N) {
+                    Log.d(TAG, " size in frame " + record.getBufferSizeInFrames());
+                }
+            }
+            return record;
+        }
+    }
+                      }
