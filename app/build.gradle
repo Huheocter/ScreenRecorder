@@ -1,46 +1,34 @@
-plugins {
-    id("com.starter.application.android")
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
 }
 
-android {
-    namespace = "net.yrom.screenrecorder.demo"
-    compileSdk = 35
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
 
-    defaultConfig {
-        applicationId = "net.yrom.screenrecorder.demo"
-        minSdk = 19
-        targetSdk = 35
-        versionCode = 54
-        versionName = "2.2.6"
-        multiDexEnabled = true
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+// temporary fix to keep using device_apps
+// https://stackoverflow.com/questions/69033022/message-error-resource-androidattr-lstar-not-found
+subprojects {
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.application") ||
+                project.plugins.hasPlugin("com.android.library")) {
+            project.android {
+                compileSdkVersion 34
+                buildToolsVersion "34.0.0"
+            }
         }
     }
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = false
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    buildFeatures {
-        viewBinding = false
-    }
-    dependencies {
-        implementation("com.google.android.material:material:1.12.0")
-        implementation(files("libs/APKEditor.jar"))
-    }
-    dependenciesInfo {
-        // Disables dependency metadata when building APKs.
-        includeInApk = false
-        // Disables dependency metadata when building Android App Bundles.
-        includeInBundle = false
-    }
+}
+
+
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
 }
