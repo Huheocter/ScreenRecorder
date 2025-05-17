@@ -1,51 +1,15 @@
 buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url 'https://maven.google.com'
-            name 'Google'
-        }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
+  dependencies {
+    // Add our classpath 
+     classpath 'com.google.gms:google-services:4.3.10'
+    // Add More 
+ }
+}
+ plugins {
+      id 'com.android.application' version '7.1.0' apply false
+      id 'com.android.library' version '7.1.0' apply false
 }
 
-allprojects {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven {
-            url 'https://maven.google.com'
-            name 'Google'
-        }
-        maven { url "https://jitpack.io" }
-        maven {
-            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-            url "$rootDir/../node_modules/react-native/android"
-        }
-    }
-}
-
-subprojects {
-    project.configurations.all {
-        resolutionStrategy.eachDependency { details ->
-            if (details.requested.group == 'com.android.support'
-              && !details.requested.name.contains('multidex') ) {
-                details.useVersion "26.0.1"
-            }
-        }
-    }
-
-    afterEvaluate {
-        project -> if (project.hasProperty("android")) {
-            android {
-                compileSdkVersion 29
-                buildToolsVersion '29.0.2'
-            }
-        }
-    }
+task clean(type: Delete) {
+   delete rootProject.buildDir
 }
