@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.yrom.screenrecorder" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:allowBackup="false"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -12,16 +12,20 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="net.yrom.screenrecorder.CliActivity"
-    android:exported="true"
-            android:name="net.yrom.screenrecorder.MainActivity"
+            android:exported="true"
             android:configChanges="screenLayout|orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW"/>
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="net.yrom.screenrecorder.MainActivity"
+            android:exported="true"
+            android:configChanges="screenLayout|orientation|screenSize"
+            android:label="@string/app_name" >
         </activity>
     </application>
 
