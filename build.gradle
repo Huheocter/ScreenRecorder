@@ -1,7 +1,7 @@
 import java.io.IOException
 plugins{
-    id 'com.starter.application.android' version '0.84.1' apply false
-    id 'com.starter.library.android' version '0.84.1' apply false
+    id 'com.github.lanchon.dexpatcher.patched-application' version '2.0.0' apply false
+    id 'com.github.lanchon.dexpatcher.patch-library' version '2.0.0' apply false
 }
 
 String getGitHash(String project) {
