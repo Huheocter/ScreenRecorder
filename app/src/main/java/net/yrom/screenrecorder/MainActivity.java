@@ -254,7 +254,7 @@ public class MainActivity extends Activity {
 private Spinner mAudioSourceSpinner;
 
 // In bindViews(), after mAudioToggle:
-mAudioSourceSpinner = findViewById(R.id.audio_source_spinner);
+private Spinner mAudioSourceSpinner = findViewById(R.id.audio_source_spinner);
 
 // Optionally, set default selection/restore from preferences as well
 
