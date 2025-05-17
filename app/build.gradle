@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.lanchon.dexpatcher.patched-application'
+    id 'com.starter.application.android'
 }
 
 android {
