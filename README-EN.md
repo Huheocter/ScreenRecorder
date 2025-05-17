@@ -4,7 +4,7 @@ This is a DEMO APP that mainly implements the screen recording function (it can 
 
 <img alt="screenshot" src="screenshot.png" width="50%" />
 
-[![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/badge_new.png)][8] [Click here to download APK][7] Quick preview of project functions
+[![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/badge_new.png)][8] [Click here to download APK][7] Quick prevew of project functions
 
 Note: It uses APIs such as [MediaProjectionManager][1], [VirtualDisplay][2], [AudioRecord][3], [MediaCodec][4] and [MediaMuxer][5], so this project supports at least Android 5.0.
 
