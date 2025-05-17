@@ -8,16 +8,16 @@
         <item>1920x1080</item>
         <item>3860x2160</item>
     </string-array>
-    <!-- audio channel counts-->
-    <string-array name="audio_channels">
-        <item>1</item>
-        <item>2</item>
-    </string-array>
+    <!-- ...existing arrays... -->
+    <string name="audio_source_mic">Mic</string>
+    <string name="audio_source_system">System (Internal)</string>
+    <string name="audio_source_both">Mic + System</string>
     <string-array name="audio_sources">
         <item>@string/audio_source_mic</item>
         <item>@string/audio_source_system</item>
         <item>@string/audio_source_both</item>
     </string-array>
+    <!-- ... -->
     <!-- video bitrate (kbps) -->
     <string-array name="video_bitrates">
         <item>800</item>
