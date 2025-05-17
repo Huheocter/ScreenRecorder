@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.github.lanchon.dexpatcher.patched-application'
 
 android {
     compileSdkVersion 28
@@ -8,7 +8,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 15
-        versionName '2.4.3'
+        versionName '2.5.0'
     }
 
     compileOptions {
