@@ -10,6 +10,21 @@ Note: It uses APIs such as [MediaProjectionManager][1], [VirtualDisplay][2], [Au
 
 Screen Recording Principles
 =====
+
+### Audio Sources
+
+- **Mic**: Record from microphone as before.
+- **System (Internal)**: Record device playback (Android 10+ only).
+- **Mic + System**: (Future) Record both--not yet implemented.
+
+### Command Line
+
+You can launch recording via CLI (requires CLI activity):
+```
+adb shell am start -n net.yrom.screenrecorder/.CliActivity --es audioSource internal --es output /sdcard/demo.mp4
+```
+
+
 ** Note ** You can checkout [32c005412](https://github.com/yrom/ScreenRecorder/tree/32c00541299e6ff56763e8f2254983008f03b24a) to view the original code (excluding microphone recording)
 - `Display` can be "projected" to a `VirtualDisplay`
 - Create a `VirtualDisplay` through a `MediaProjection` obtained from `MediaProjectionManager`
