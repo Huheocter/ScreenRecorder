@@ -36,4 +36,8 @@
     <string name="gravando">Gravando...</string>
     <string name="stop">Parar</string>
     <string name="create_screenRecorder_failure">Falaha ao iniciaro Gravador de Tela</string>
+    <string name="codec_unsupported_size_with_framerate" formatted="false">codec '%s' não suporta o tamanho %dx%d(%s) com a taxa de quadros %d</string>
+    <string name="codec_unsupported_size" formatted="false">O codec '%s' não suporta o tamanho %dx%d (%s)</string>
+    <string name="codec_unsupported_bitrate" formatted="false">O codec '%s' não suporta a taxa de bits %d</string>
+    <string name="codec_unsupported_with_framerate" formatted="false">O codec '%s' não suporta a taxa de quadros %d</string>
 </resources>
