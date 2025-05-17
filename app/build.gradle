@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace 'net.yrom.screenrecorder.demo' // <-- Add this line!
     compileSdkVersion 28
 
     defaultConfig {
