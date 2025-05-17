@@ -34,4 +34,8 @@
     <string name="gravando">Recording...</string>
     <string name="stop">Stop</string>
     <string name="create_screenRecorder_failure">Create ScreenRecorder failure</string>
+    <string name="codec_unsupported_size_with_framerate" formatted="false">codec '%s' unsupported size %dx%d(%s) with framerate %d</string>
+    <string name="codec_unsupported_size" formatted="false">codec '%s' unsupported size %dx%d (%s)</string>
+    <string name="codec_unsupported_bitrate" formatted="false">codec '%s' unsupported bitrate %d</string>
+    <string name="codec_unsupported_with_framerate" formatted="false">codec '%s' unsupported framerate %d</string>
 </resources>
