@@ -1,24 +1,46 @@
-apply plugin: 'com.github.lanchon.dexpatcher.patched-application'
+plugins {
+    id("com.android.application")
+}
 
 android {
-    compileSdkVersion 28
+    namespace = "net.yrom.screenrecorder.demo"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId "net.yrom.screenrecorder.demo"
-        minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 15
-        versionName '2.5.0'
+        applicationId = "net.yrom.screenrecorder.demo"
+        minSdk = 19
+        targetSdk = 35
+        versionCode = 54
+        versionName = "2.2.6"
+        multiDexEnabled = true
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
+    }
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = false
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding = false
+    }
+    dependencies {
+        implementation("com.google.android.material:material:1.12.0")
+        implementation(files("libs/APKEditor.jar"))
+    }
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
     }
 }
