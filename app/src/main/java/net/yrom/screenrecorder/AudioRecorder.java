@@ -338,6 +338,7 @@ class MicRecorder implements Encoder {
     AudioPlaybackCaptureConfiguration config =
         new AudioPlaybackCaptureConfiguration.Builder(mediaProjection)
             .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
+            .addMatchingUsage(AudioAttributes.USAGE_GAME)
             .build();
 
     AudioRecord record = new AudioRecord.Builder()
@@ -382,6 +383,7 @@ class MicRecorder implements Encoder {
 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && selectedAudioSource == SYSTEM_AUDIO) {
     AudioPlaybackCaptureConfiguration config = new AudioPlaybackCaptureConfiguration.Builder(mediaProjection)
             .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
+            .addMatchingUsage(AudioAttributes.USAGE_GAME)
             .build();
 
     record = new AudioRecord.Builder()
