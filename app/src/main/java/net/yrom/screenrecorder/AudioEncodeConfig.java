@@ -25,21 +25,25 @@ import java.util.Objects;
  * @version 2017/12/3
  */
 public class AudioEncodeConfig {
+    public enum SourceType { MIC, INTERNAL, BOTH }
     final String codecName;
     final String mimeType;
     final int bitRate;
     final int sampleRate;
     final int channelCount;
     final int profile;
+    public final SourceType sourceType;
 
     public AudioEncodeConfig(String codecName, String mimeType,
-                             int bitRate, int sampleRate, int channelCount, int profile) {
+                             int bitRate, int sampleRate, int channelCount, int profile,
+                             SourceType sourceType) {
         this.codecName = codecName;
         this.mimeType = Objects.requireNonNull(mimeType);
         this.bitRate = bitRate;
         this.sampleRate = sampleRate;
         this.channelCount = channelCount;
         this.profile = profile;
+        this.sourceType = sourceType;
     }
 
     MediaFormat toFormat() {
