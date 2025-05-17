@@ -250,19 +250,36 @@ public class MainActivity extends Activity {
         return mVirtualDisplay;
     }
 
-    private AudioEncodeConfig createAudioConfig() {
-        if (!mAudioToggle.isChecked()) return null;
-        String codec = getSelectedAudioCodec();
-        if (codec == null) {
-            return null;
-        }
-        int bitrate = getSelectedAudioBitrate();
-        int samplerate = getSelectedAudioSampleRate();
-        int channelCount = getSelectedAudioChannelCount();
-        int profile = getSelectedAudioProfile();
+    // Add member
+private Spinner mAudioSourceSpinner;
 
-        return new AudioEncodeConfig(codec, AUDIO_AAC, bitrate, samplerate, channelCount, profile);
+// In bindViews(), after mAudioToggle:
+mAudioSourceSpinner = findViewById(R.id.audio_source_spinner);
+
+// Optionally, set default selection/restore from preferences as well
+
+// In createAudioConfig():
+private AudioEncodeConfig createAudioConfig() {
+    if (!mAudioToggle.isChecked()) return null;
+    String codec = getSelectedAudioCodec();
+    if (codec == null) {
+        return null;
     }
+    int bitrate = getSelectedAudioBitrate();
+    int samplerate = getSelectedAudioSampleRate();
+    int channelCount = getSelectedAudioChannelCount();
+    int profile = getSelectedAudioProfile();
+
+    // AUDIO SOURCE PICK LOGIC
+    AudioEncodeConfig.SourceType sourceType = AudioEncodeConfig.SourceType.MIC;
+    if (mAudioSourceSpinner != null) {
+        int pos = mAudioSourceSpinner.getSelectedItemPosition();
+        if (pos == 1) sourceType = AudioEncodeConfig.SourceType.INTERNAL;
+        else if (pos == 2) sourceType = AudioEncodeConfig.SourceType.BOTH;
+    }
+
+    return new AudioEncodeConfig(codec, AUDIO_AAC, bitrate, samplerate, channelCount, profile, sourceType);
+}
 
     private VideoEncodeConfig createVideoConfig() {
         final String codec = getSelectedVideoCodec();
