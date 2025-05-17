@@ -17,6 +17,10 @@
         <item>@string/audio_source_system</item>
         <item>@string/audio_source_both</item>
     </string-array>
+    <string-array name="audio_channels">
+        <item>Mono</item>
+        <item>Stereo</item>
+    </string-array>
     <!-- ... -->
     <!-- video bitrate (kbps) -->
     <string-array name="video_bitrates">
