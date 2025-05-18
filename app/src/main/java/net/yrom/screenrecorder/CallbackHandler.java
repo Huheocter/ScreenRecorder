@@ -1,18 +1,3 @@
-/*
- * Created by Huheocter on 2025-05-18 01:47:29 UTC
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package net.yrom.screenrecorder;
 
 import android.os.Handler;
@@ -24,9 +9,9 @@ public class CallbackHandler extends Handler {
     private static final int MSG_ERROR = 1;
     private static final int MSG_RECORDING = 2;
 
-    private final Callback mCallback;
+    private final Encoder.Callback mCallback;
 
-    public CallbackHandler(Callback callback) {
+    public CallbackHandler(Encoder.Callback callback) {
         super(Looper.getMainLooper());
         mCallback = callback;
     }
@@ -41,7 +26,7 @@ public class CallbackHandler extends Handler {
                 mCallback.onFailed((Throwable) msg.obj);
                 break;
             case MSG_RECORDING:
-                mCallback.onRecording(msg.arg1);
+                mCallback.onRecording((long) msg.obj);
                 break;
         }
     }
@@ -55,6 +40,6 @@ public class CallbackHandler extends Handler {
     }
 
     public void notifyRecording(long presentationTimeUs) {
-        obtainMessage(MSG_RECORDING, (int) presentationTimeUs).sendToTarget();
+        obtainMessage(MSG_RECORDING, presentationTimeUs).sendToTarget();
     }
 }
