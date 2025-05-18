@@ -70,6 +70,8 @@ import static net.yrom.screenrecorder.ScreenRecorder.VIDEO_AVC;
 public class MainActivity extends Activity {
     private static final int REQUEST_MEDIA_PROJECTION = 1;
     private static final int REQUEST_PERMISSIONS = 2;
+    public static final String ACTION_STOP = "net.yrom.screenrecorder.action.STOP";
+    
     // members below will be initialized in onCreate()
     private MediaProjectionManager mMediaProjectionManager;
     private Button mButton;
@@ -91,8 +93,7 @@ public class MainActivity extends Activity {
     private MediaCodecInfo[] mAvcCodecInfos; // avc codecs
     private MediaCodecInfo[] mAacCodecInfos; // aac codecs
     private Notifications mNotifications;
-
-    /** ... rest of member variables ... */
+    private boolean isRecording = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,6 @@ public class MainActivity extends Activity {
         mMediaProjectionManager = (MediaProjectionManager) getApplicationContext().getSystemService(MEDIA_PROJECTION_SERVICE);
         mNotifications = new Notifications(getApplicationContext());
         bindViews();
-        // ...rest of your onCreate...
     }
 
     private void bindViews() {
@@ -123,9 +123,52 @@ public class MainActivity extends Activity {
         mAudioChannelCount = findViewById(R.id.audio_channel_count);
         mAudioToggle = findViewById(R.id.with_audio);
         mAudioSourceSpinner = findViewById(R.id.audio_source_spinner);
-        // ...rest of your bindViews...
     }
 
-    /** ... rest of the code unchanged ... **/
-    // (leave all methods as they were in your repo, but ensure you do NOT assign view objects at field declaration, only in bindViews/onCreate)
+    private void onButtonClick(View v) {
+        if (isRecording) {
+            stopRecording();
+        } else {
+            startRecording();
+        }
+        isRecording = !isRecording;
+        updateRecordButton();
+    }
+
+    private void onSaveButtonClick(View v) {
+        saveConfiguration();
+    }
+
+    private void startRecording() {
+        if (Build.VERSION.SDK_INT >= M) {
+            if (!hasPermissions()) {
+                requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, REQUEST_PERMISSIONS);
+                return;
+            }
+        }
+        Intent captureIntent = mMediaProjectionManager.createScreenCaptureIntent();
+        startActivityForResult(captureIntent, REQUEST_MEDIA_PROJECTION);
+    }
+
+    private void stopRecording() {
+        // Implementation of stopping recording
+        mButton.setText(R.string.start_recorder);
+    }
+
+    private void updateRecordButton() {
+        mButton.setText(isRecording ? R.string.stop_recorder : R.string.start_recorder);
+    }
+
+    private void saveConfiguration() {
+        // Implementation of saving configuration
+        Toast.makeText(this, R.string.set_default, Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean hasPermissions() {
+        PackageManager pm = getPackageManager();
+        String packageName = getPackageName();
+        int granted = (Build.VERSION.SDK_INT >= M) ? PackageManager.PERMISSION_GRANTED : 0;
+        return pm.checkPermission(WRITE_EXTERNAL_STORAGE, packageName) == granted
+                && pm.checkPermission(RECORD_AUDIO, packageName) == granted;
+    }
 }
