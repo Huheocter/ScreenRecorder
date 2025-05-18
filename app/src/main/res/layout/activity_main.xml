@@ -66,7 +66,7 @@
 
             <net.yrom.screenrecorder.view.NamedSpinner
                 android:id="@+id/avc_profile"
-                android:name="@string/avc_profle"
+                android:name="@string/avc_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp" />
