@@ -1,6 +1,6 @@
 Screen Recorder
 =====
-这是个DEMO APP 主要是实现了屏幕录制功能（可同时录制来自麦克风的声音）。
+这是个DEMO APP 主要是实现了屏幕录制功能（可同时录制来自麦克风的声音）
 
 <img alt="screenshot" src="screenshot.png" width="50%" />
 
