@@ -26,7 +26,7 @@ public class RecordHandler extends Handler {
                 mRecorder.handleStopRecord();
                 break;
             case MSG_ERROR:
-                mRecorder.handleError((Throwable) msg.obj);
+                mRecorder.handleError((Exception) msg.obj);
                 break;
         }
     }
@@ -39,7 +39,7 @@ public class RecordHandler extends Handler {
         sendEmptyMessage(MSG_STOP);
     }
 
-    public void sendErrorMessage(Throwable error) {
+    public void sendErrorMessage(Exception error) {
         obtainMessage(MSG_ERROR, error).sendToTarget();
     }
 }
