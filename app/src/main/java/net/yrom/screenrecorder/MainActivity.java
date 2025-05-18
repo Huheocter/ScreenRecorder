@@ -18,6 +18,7 @@ package net.yrom.screenrecorder;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -51,6 +52,9 @@ import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import net.yrom.screenrecorder.view.NamedSpinner;
 
 import java.io.File;
@@ -70,6 +74,7 @@ import static net.yrom.screenrecorder.ScreenRecorder.VIDEO_AVC;
 public class MainActivity extends Activity {
     private static final int REQUEST_MEDIA_PROJECTION = 1;
     private static final int REQUEST_PERMISSIONS = 2;
+    private static final int REQUEST_POST_NOTIFICATIONS = 1001;
     public static final String ACTION_STOP = "net.yrom.screenrecorder.action.STOP";
     
     // members below will be initialized in onCreate()
@@ -167,8 +172,36 @@ public class MainActivity extends Activity {
     private boolean hasPermissions() {
         PackageManager pm = getPackageManager();
         String packageName = getPackageName();
-        // Directly compare to PackageManager.PERMISSION_GRANTED as per Android Lint
         return pm.checkPermission(WRITE_EXTERNAL_STORAGE, packageName) == PackageManager.PERMISSION_GRANTED
                 && pm.checkPermission(RECORD_AUDIO, packageName) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    // --- Notification Permission Handling for Android 13+ ---
+
+    private static final int NOTIFICATION_ID = 2001;
+
+    // Example method to show a notification safely
+    private void showScreenRecorderNotification(Notification notification) {
+        if (!mNotifications.canPostNotifications(this)) {
+            Notifications.requestNotificationPermission(this, REQUEST_POST_NOTIFICATIONS);
+        } else {
+            mNotifications.notify(this, NOTIFICATION_ID, notification);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_POST_NOTIFICATIONS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, you can now show notifications
+                // For example, show a notification or inform the user
+                // mNotifications.notify(this, NOTIFICATION_ID, notificationObject);
+            } else {
+                // Permission denied, inform user
+                Toast.makeText(this, "Notification permission denied. You may miss important alerts.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        // Handle your other permissions as needed...
     }
 }
