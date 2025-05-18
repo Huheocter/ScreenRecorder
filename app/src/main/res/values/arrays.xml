@@ -1,60 +1,35 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <resources>
-    <!-- width x height -->
     <string-array name="video_resolutions">
-        <item>480x360</item>
-        <item>720x480</item>
-        <item>1280x720</item>
         <item>1920x1080</item>
-        <item>3860x2160</item>
+        <item>1280x720</item>
+        <item>640x480</item>
     </string-array>
-    <!-- ...existing arrays... -->
-    <string name="audio_source_mic">Mic</string>
-    <string name="audio_source_system">System (Internal)</string>
-    <string name="audio_source_both">Mic + System</string>
-    <string-array name="audio_sources">
-        <item>@string/audio_source_mic</item>
-        <item>@string/audio_source_system</item>
-        <item>@string/audio_source_both</item>
+    <string-array name="video_bitrates">
+        <item>4000000</item>
+        <item>2000000</item>
+        <item>1000000</item>
+    </string-array>
+    <string-array name="video_framerates">
+        <item>30</item>
+        <item>24</item>
+        <item>15</item>
+    </string-array>
+    <string-array name="iframeintervals">
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+    </string-array>
+    <string-array name="orientations">
+        <item>Landscape</item>
+        <item>Portrait</item>
     </string-array>
     <string-array name="audio_channels">
         <item>Mono</item>
         <item>Stereo</item>
     </string-array>
-    <!-- ... -->
-    <!-- video bitrate (kbps) -->
-    <string-array name="video_bitrates">
-        <item>800</item>
-        <item>1200</item>
-        <item>1600</item>
-        <item>2000</item>
-        <item>2500</item>
-        <item>5000</item>
-        <item>10000</item>
-        <item>12000</item>
-        <item>16000</item>
-        <item>20000</item>
-        <item>25000</item>
+    <string-array name="audio_sources">
+        <item>MIC</item>
+        <item>VOICE_CALL</item>
+        <item>VOICE_COMMUNICATION</item>
     </string-array>
-    <string-array name="video_framerates">
-        <item>15</item>
-        <item>25</item>
-        <item>30</item>
-        <item>60</item>
-        <item>90</item>
-        <item>120</item>
-    </string-array>
-    <string-array name="iframeintervals">
-        <item>1</item>
-        <item>5</item>
-        <item>10</item>
-        <item>20</item>
-        <item>30</item>
-    </string-array>
-    <string-array name="orientations">
-        <item>@string/portrait</item>
-        <item>@string/landscape</item>
-    </string-array>
-    <string name="portrait">Portrait</string>
-    <string name="landscape">Landscape</string>
 </resources>
