@@ -9,14 +9,12 @@ public class MicRecorder implements Encoder {
     private Encoder.Callback mCallback;
     private boolean mIsRecording;
 
-    // Constructor matching the call in ScreenRecorder.java
     public MicRecorder(Context context, AudioEncodeConfig audioConfig, Encoder.Callback callback) {
         mRecordThread = new HandlerThread("RecordThread");
         mCallback = callback;
         // Use context or audioConfig as needed in your implementation
     }
 
-    // No-arg constructor if still needed elsewhere
     public MicRecorder() {
         mRecordThread = new HandlerThread("RecordThread");
     }
@@ -28,10 +26,14 @@ public class MicRecorder implements Encoder {
 
     @Override
     public void release() {
-        // Clean up resources here
         if (mRecordThread.isAlive()) {
             mRecordThread.quitSafely();
         }
+    }
+
+    @Override
+    public void prepare() {
+        // Implementation goes here if needed
     }
 
     void handleStartRecord() {
