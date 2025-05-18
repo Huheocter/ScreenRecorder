@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace 'net.yrom.screenrecorder' // <-- Required for AGP 8.0+ / Gradle 9+
     compileSdkVersion 34
 
     defaultConfig {
@@ -23,17 +24,24 @@ android {
 
     lintOptions {
         abortOnError true
-        // Uncomment below to create a baseline and see only new lint errors
-        // baseline file("lint-baseline.xml")
+        // To enable baseline, uncomment and use: baseline file("lint-baseline.xml")
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    // AndroidX Core is required for notification permission checks
+
+    // AndroidX Core for notification permission handling
     implementation 'androidx.core:core:1.12.0'
+
+    // AppCompat for compatibility support (if used in your project)
     implementation 'androidx.appcompat:appcompat:1.6.1'
+
+    // Material Components (optional, but recommended for modern UI)
     implementation 'com.google.android.material:material:1.11.0'
-    // Add other dependencies as needed
+
+    // JUnit for unit tests (uncomment if you have unit tests)
     // testImplementation 'junit:junit:4.13.2'
+
+    // Add other dependencies as needed
 }
