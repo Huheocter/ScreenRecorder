@@ -38,15 +38,16 @@ public class MicRecorder implements Encoder {
 
     void handleStartRecord() {
         mIsRecording = true;
-        if (mCallback != null) mCallback.onSuccess();
+        // If you want to notify success, do it via onError with null or a custom Exception.
+        // Example: mCallback.onError(this, null); // but usually only errors are reported
     }
 
     void handleStopRecord() {
         mIsRecording = false;
     }
 
-    void handleError(Throwable error) {
-        if (mCallback != null) mCallback.onFailed(error);
+    void handleError(Exception error) {
+        if (mCallback != null) mCallback.onError(this, error);
     }
 
     public void start() {
