@@ -167,8 +167,8 @@ public class MainActivity extends Activity {
     private boolean hasPermissions() {
         PackageManager pm = getPackageManager();
         String packageName = getPackageName();
-        int granted = (Build.VERSION.SDK_INT >= M) ? PackageManager.PERMISSION_GRANTED : 0;
-        return pm.checkPermission(WRITE_EXTERNAL_STORAGE, packageName) == granted
-                && pm.checkPermission(RECORD_AUDIO, packageName) == granted;
+        // Directly compare to PackageManager.PERMISSION_GRANTED as per Android Lint
+        return pm.checkPermission(WRITE_EXTERNAL_STORAGE, packageName) == PackageManager.PERMISSION_GRANTED
+                && pm.checkPermission(RECORD_AUDIO, packageName) == PackageManager.PERMISSION_GRANTED;
     }
 }
