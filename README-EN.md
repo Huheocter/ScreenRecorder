@@ -1,4 +1,4 @@
-Screen Recorder
+Screen Recorder 
 =====
 This is a DEMO APP that mainly implements the screen recording function (it can also record the sound from the microphone).
 
