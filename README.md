@@ -1,19 +1,34 @@
-Screen Recorder
+Screen Recorder 
 =====
-这是个DEMO APP 主要是实现了屏幕录制功能（可同时录制来自麦克风的声音）
+This is a DEMO APP that mainly implements the screen recording function (it can also record the sound from the microphone).
 
 <img alt="screenshot" src="screenshot.png" width="50%" />
 
-[![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/badge_new.png)][8]  [点此处下载APK][7] 快速预览项目功能
+[![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/badge_new.png)][8] [Click here to download APK][7] Quick prevew of project functions
 
-说明：使用了 [MediaProjectionManager][1], [VirtualDisplay][2], [AudioRecord][3], [MediaCodec][4] 以及 [MediaMuxer][5] 等API，故而这个项目最低支持Android 5.0。
+Note: It uses APIs such as [MediaProjectionManager][1], [VirtualDisplay][2], [AudioRecord][3], [MediaCodec][4] and [MediaMuxer][5], so this project supports at least Android 5.0.
 
-录屏原理
+Screen Recording Principles
 =====
-** 注意 ** 你可以checkout  [32c005412](https://github.com/yrom/ScreenRecorder/tree/32c00541299e6ff56763e8f2254983008f03b24a) 查看原始的（不包含麦克风录制的）代码
-- `Display` 可以“投影”到一个 `VirtualDisplay`
-- 通过 `MediaProjectionManager` 取得的 `MediaProjection`创建`VirtualDisplay` 
-- `VirtualDisplay` 会将图像渲染到 `Surface`中，而这个`Surface`是由`MediaCodec`所创建的
+
+### Audio Sources
+
+- **Mic**: Record from microphone as before.
+- **System (Internal)**: Record device playback (Android 10+ only).
+- **Mic + System**: (Future) Record both--not yet implemented.
+
+### Command Line
+
+You can launch recording via CLI (requires CLI activity):
+```
+adb shell am start -n net.yrom.screenrecorder/.CliActivity --es audioSource internal --es output /sdcard/demo.mp4
+```
+
+
+** Note ** You can checkout [32c005412](https://github.com/yrom/ScreenRecorder/tree/32c00541299e6ff56763e8f2254983008f03b24a) to view the original code (excluding microphone recording)
+- `Display` can be "projected" to a `VirtualDisplay`
+- Create a `VirtualDisplay` through a `MediaProjection` obtained from `MediaProjectionManager`
+- `VirtualDisplay` will render the image to a `Surface`, which is created by `MediaCodec`
 
 ```
 mEncoder = MediaCodec.createEncoderByType(MIME_TYPE);
@@ -23,7 +38,7 @@ mSurface = mEncoder.createInputSurface();
 mVirtualDisplay = mMediaProjection.createVirtualDisplay(name, mWidth, mHeight, mDpi, DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC, mSurface, null, null);
 ```
 
-- `MediaMuxer` 将从 `MediaCodec` 得到的图像元数据封装并输出到MP4文件中
+- `MediaMuxer` encapsulates the image metadata obtained from `MediaCodec` and outputs it to the MP4 file
 
 ```
 int index = mEncoder.dequeueOutputBuffer(mBufferInfo, TIMEOUT_US);
@@ -32,7 +47,7 @@ ByteBuffer encodedData = mEncoder.getOutputBuffer(index);
 ...
 mMuxer.writeSampleData(mVideoTrackIndex, encodedData, mBufferInfo);
 ```
-所以其实在**Android 4.4**上可以通过`DisplayManager`来创建`VirtualDisplay`也是可以实现录屏，但因为权限限制需要**ROOT**。 (see [DisplayManager.createVirtualDisplay()][6])
+So in fact, on **Android 4.4**, you can create `VirtualDisplay` through `DisplayManager` and also record the screen, but because of permission restrictions, **ROOT** is required. (see [DisplayManager.createVirtualDisplay()][6])
 
 [1]: https://developer.android.com/reference/android/media/projection/MediaProjectionManager.html
 [2]: https://developer.android.com/reference/android/hardware/display/VirtualDisplay.html
