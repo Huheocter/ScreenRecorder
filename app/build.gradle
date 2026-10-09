@@ -1,13 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace 'net.yrom.screenrecorder' // <-- Required for AGP 8.0+ / Gradle 9+
+    buildFeatures {
+        buildConfig true
+    }
+    namespace 'net.yrom.screenrecorder'
     compileSdkVersion 34
 
     defaultConfig {
         applicationId "net.yrom.screenrecorder"
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
     }
