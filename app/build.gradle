@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
+    buildFeatures {
+        buildConfig true
+    }
     namespace 'net.yrom.screenrecorder'
     compileSdkVersion 34
 
